@@ -106,11 +106,11 @@ comments:
     shortname:    # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
-    repo:        https://github.com/theboilerbuddy/theboilerbuddy.github.io # https://github.com/theboilerbuddy/theboilerbuddy.github.io
+    repo:        https://github.com/TheEvilSaint/theevilsaint.github.io # https://github.com/theboilerbuddy/theboilerbuddy.github.io
     issue_term:   # < url | pathname | title | ...>
   # Giscus options › https://giscus.app
   giscus:
-    repo: theboilerbuddy/theboilerbuddy.github.io
+    repo: TheEvilSaint/theevilsaint.github.io
     repo_id: MDEwOlJlcG9zaXRvcnkyNTQ3ODQ3Nzk
     category: Comments
     category_id: DIC_kwDODy-1C84CSN7z
