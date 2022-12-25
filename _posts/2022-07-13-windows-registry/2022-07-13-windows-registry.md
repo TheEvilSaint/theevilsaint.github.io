@@ -28,7 +28,7 @@ List all
 reg query <hive>
 ```
 
-Use `/f` to search
+Use the `/f` switch to search
 
 ```
 reg query HKLM /f password
