@@ -28,7 +28,7 @@ description: >-                        # used by seo meta and the atom feed
   Documentation for Techno Tim YouTube videos for all your copy pasta needs!
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: 'http://theboilerbuddy.github.io'
+url: 'http://theevilsaint.github.io'
 
 github:
   username: theboilerbuddy             # change to your github username
@@ -67,7 +67,7 @@ social:
 # The end of `jekyll-seo-tag` settings
 
 google_analytics:
-  id: 'G-NZ5V7DM8F5'          # Fill with your Google Analytics ID
+  id: 'G-KK5XXRT4LD'          # Fill with your Google Analytics ID
   # Google Analytics pageviews report settings
   pv:
     proxy_endpoint:   # fill in the Google Analytics superProxy endpoint of Google App Engine
