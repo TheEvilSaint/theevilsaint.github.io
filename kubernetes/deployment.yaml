@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: technotim-docs
+  name: evilsaint-docs
   namespace: default
 spec:
   selector:
     matchLabels:
-      app: technotim-docs
+      app: evilsaint-docs
   replicas: 3
   progressDeadlineSeconds: 600
   revisionHistoryLimit: 3
@@ -18,12 +18,12 @@ spec:
   template:
     metadata:
       labels:
-        app: technotim-docs
+        app: evilsaint-docs
       annotations:
         deploy-date: "deploy-date-value"
     spec:
       containers:
-      - name: technotim-docs
+      - name: evilsaint-docs
         image: "registry-value:latest"
         resources:
           requests:

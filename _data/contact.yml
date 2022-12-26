@@ -6,19 +6,19 @@
 -
   type: youtube
   icon: 'fab fa-youtube'
-  url: 'https://l.technotim.live/subscribe'
--
-  type: twitch
-  icon: 'fab fa-twitch'
-  url: 'https://l.technotim.live/twitch'
--
-  type: patreon
-  icon: 'fab fa-patreon'
-  url:  'https://www.patreon.com/technotim'
--
-  type: discord
-  icon: 'fab fa-discord'
-  url: 'https://l.technotim.live/discord'
+  url: 'https://evilsaint.com/subscribe'
+# -
+#   type: twitch
+#   icon: 'fab fa-twitch'
+#   url: 'https://evilsaint.com/twitch'
+# -
+#   type: patreon
+#   icon: 'fab fa-patreon'
+#   url:  'https://www.patreon.com/evilsaint'
+# -
+#   type: discord
+#   icon: 'fab fa-discord'
+#   url: 'https://evilsaint.com/discord'
 -
   type: github
   icon: 'fab fa-github'
