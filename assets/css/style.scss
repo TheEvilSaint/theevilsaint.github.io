@@ -11,7 +11,7 @@ $tab-count: {{ site.tabs | size | plus: 1 }}; // plus 1 for home tab
 
 /* append your custom style below */
 
-pre {
+<p> pre {
     font-size: 14rem !important;
 
 }

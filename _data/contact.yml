@@ -22,6 +22,8 @@
 -
   type: github
   icon: 'fab fa-github'
+  url: 'https://evilsaint.com/subscribe'
+
 -
   type: rss
   icon: 'fas fa-rss'
@@ -29,9 +31,11 @@
 -
   type: instagram
   icon: 'fab fa-instagram'
+  url: 'https://www.instagram.com/therealevilsaint/'
 -
   type: facebook
   icon: 'fab fa-facebook'
+  url: 'https://www.facebook.com/TheEvilSaint/'
 
 # -
 #   type: tiktok
