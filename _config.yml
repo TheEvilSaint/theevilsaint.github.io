@@ -22,10 +22,10 @@ timezone: Europe/London
 # ↓ --------------------------
 
 title: EvilSaint                         # the main title
-tagline: Video documentation for all your copy pasta needs!   # it will display as the sub-title
+tagline: I void warranties   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  Documentation for Techno Tim YouTube videos for all your copy pasta needs!
+  I void warranties
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
 url: 'http://theevilsaint.github.io'
