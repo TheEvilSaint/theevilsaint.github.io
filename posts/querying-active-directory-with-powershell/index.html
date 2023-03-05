@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="en" data-mode="dark" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="generator" content="Jekyll v4.3.1" /><meta property="og:title" content="Querying Active Directory With PowerShell" /><meta property="og:locale" content="en" /><meta name="description" content="Active Directory lies at the heart of most organisations networks. PowerShell is a versatile Scripting Language that Windows natively support. We can leverage PowerShell to enumerate Active Directory for various pieces of information crucial to our penetration tests." /><meta property="og:description" content="Active Directory lies at the heart of most organisations networks. PowerShell is a versatile Scripting Language that Windows natively support. We can leverage PowerShell to enumerate Active Directory for various pieces of information crucial to our penetration tests." /><link rel="canonical" href="http://theevilsaint.github.io/posts/querying-active-directory-with-powershell/" /><meta property="og:url" content="http://theevilsaint.github.io/posts/querying-active-directory-with-powershell/" /><meta property="og:site_name" content="EvilSaint" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-06-22T00:00:00+01:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Querying Active Directory With PowerShell" /><meta name="twitter:site" content="@_evilsaint_" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-22T00:00:00+01:00","datePublished":"2022-06-22T00:00:00+01:00","description":"Active Directory lies at the heart of most organisations networks. PowerShell is a versatile Scripting Language that Windows natively support. We can leverage PowerShell to enumerate Active Directory for various pieces of information crucial to our penetration tests.","headline":"Querying Active Directory With PowerShell","mainEntityOfPage":{"@type":"WebPage","@id":"http://theevilsaint.github.io/posts/querying-active-directory-with-powershell/"},"url":"http://theevilsaint.github.io/posts/querying-active-directory-with-powershell/"}</script><title>Querying Active Directory With PowerShell | EvilSaint</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="EvilSaint"><meta name="application-name" content="EvilSaint"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" class="mx-auto"> <img src="https://evilsaint.com/static/images/evilsaint_shield_logo.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title"> <a href="/">EvilSaint</a></div><div class="site-subtitle font-italic">I void warranties</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://twitter.com/_evilsaint_" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href="https://evilsaint.com/subscribe" aria-label="youtube" target="_blank" rel="noopener"> <i class="fab fa-youtube"></i> </a> <a href="https://github.com/TheEvilSaint" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a> <a href="https://www.instagram.com/therealevilsaint/" aria-label="instagram" target="_blank" rel="noopener"> <i class="fab fa-instagram"></i> </a> <a href="https://www.facebook.com/TheEvilSaint/" aria-label="facebook" target="_blank" rel="noopener"> <i class="fab fa-facebook"></i> </a></div></div><div id="topbar-wrapper"><div id="topbar" class="container d-flex align-items-center justify-content-between h-100 pl-3 pr-3 pl-md-4 pr-md-4"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Querying Active Directory With PowerShell</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper" class="d-flex justify-content-center"><div id="main" class="container pl-xl-4 pr-xl-4"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-9 pr-xl-4"><div class="post pl-1 pr-1 pl-md-2 pr-md-2"><h1 data-toc-skip>Querying Active Directory With PowerShell</h1><div class="post-meta text-muted"> <span> Posted <em class="" data-ts="1655852400" data-df="ll" data-toggle="tooltip" data-placement="bottom"> Jun 22, 2022 </em> </span><div class="d-flex justify-content-between"> <span> By <em> <a href="https://www.twitter.com/_evilsaint_/">evilsaint</a> </em> </span><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="920 words"> <em>5 min</em> read</span></div></div></div><div class="post-content"><h1 id="active-directory-querying-with-powershell">Active Directory Querying With PowerShell</h1><p>PowerShell v1: .NET &amp; ADSI</p><p>PowerShell v2 &amp; newer: PowerShell Active Directory Module</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>Import-module servermanager<span class="p">;</span> add-windowsfeature rsat-ad-tools
+Import-module servermanager<span class="p">;</span> add-windowsfeature rsat-ad-PowerShell
+</pre></table></code></div></div><h3 id="net"><span class="mr-2">.NET</span><a href="#net" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Example of .NET</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.DomainControllers
+</pre></table></code></div></div><h3 id="adsi"><span class="mr-2">ADSI</span><a href="#adsi" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><a href="http://www.selfadsi.org/extended-ad/search-domain-controllers.htm">http://www.selfadsi.org/extended-ad/search-domain-controllers.htm</a></p><p>Example of ADSI</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nv">$UserID</span> <span class="o">=</span> <span class="s2">"JoeUser"</span>
+<span class="nv">$root</span> <span class="o">=</span> <span class="o">[</span>ADSI]<span class="s1">''</span>
+<span class="nv">$searcher</span> <span class="o">=</span> new-object System.DirectoryServices.DirectorySearcher<span class="o">(</span><span class="nv">$root</span><span class="o">)</span>
+<span class="nv">$searcher</span>.filter <span class="o">=</span> <span class="s2">"(&amp;(objectClass=user)(sAMAccountName=</span><span class="nv">$UserID</span><span class="s2">))"</span>
+<span class="nv">$user</span> <span class="o">=</span> <span class="nv">$searcher</span>.findall<span class="o">()</span>
+<span class="nv">$user</span>
+</pre></table></code></div></div><h3 id="active-directory-module"><span class="mr-2">Active Directory Module</span><a href="#active-directory-module" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Example of Active Directory Module</p><ul><li>Requires AD Web Services (ADWS) running on targeted DC (TCP 9389)<ul><li>(Side Note) PowerShell Remoting uses TCP 5985 (HTTP) or TCP 5986 (HTTPS)</ul><li>SOAP XML messages over HTTP translated on DC</ul><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>Import-Module ActiveDirectory
+<span class="nv">$UserID</span> <span class="o">=</span> <span class="s2">"JoeUser"</span>
+Get-ADUser <span class="nv">$UserID</span> <span class="nt">-Property</span> <span class="k">*</span>
+</pre></table></code></div></div><p>Here are some of the more useful Active Directory Module commands</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>Get-Module <span class="nt">-ListAvailable</span>
+Get-Command <span class="nt">-Module</span> ActiveDirectory
+</pre></table></code></div></div><p>Server 2008 R2</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>Get/Set-ADForest
+Get/Set-ADDomain
+Get/Set-ADDomainController
+Get/Set-ADUser
+Get/Set-ADComputer
+Get/Set-ADGroup
+Get/Set-ADGroupMember
+Get/Set-ADObject
+Get/Set-ADOrganizationalUnit
+
+Enable-ADOptionalFeature
+Disable/Enable-ADAccount
+Move-ADDirectoryServerOperationMasterRole
+New-ADUser
+New-ADComputer
+New-ADGroup
+New-ADObject
+New-ADOrganizationalUnit
+</pre></table></code></div></div><p>Server 2012+</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre><td class="rouge-code"><pre><span class="k">*</span><span class="nt">-ADResourcePropertyListMember</span>
+<span class="k">*</span><span class="nt">-ADAuthenticationPolicy</span>
+<span class="k">*</span><span class="nt">-ADAuthenticationPolicySilo</span>
+<span class="k">*</span><span class="nt">-ADCentralAccessPolicy</span>
+<span class="k">*</span><span class="nt">-ADCentralAccessRule</span>
+<span class="k">*</span><span class="nt">-ADResourceProperty</span>
+<span class="k">*</span><span class="nt">-ADResourcePropertyList</span>
+<span class="k">*</span><span class="nt">-ADResourcePropertyValueType</span>
+<span class="k">*</span><span class="nt">-ADDCCloneConfigFile</span>
+<span class="k">*</span><span class="nt">-ADReplicationAttributeMetadata</span>
+<span class="k">*</span><span class="nt">-ADReplicationConnection</span>
+<span class="k">*</span><span class="nt">-ADReplicationFailure</span>
+<span class="k">*</span><span class="nt">-ADReplicationPartnerMetadata</span>
+<span class="k">*</span><span class="nt">-ADReplicationQueueOperation</span>
+<span class="k">*</span><span class="nt">-ADReplicationSite</span>
+<span class="k">*</span><span class="nt">-ADReplicationSiteLink</span>
+<span class="k">*</span><span class="nt">-ADReplicationSiteLinkBridge</span>
+<span class="k">*</span><span class="nt">-ADReplicationSubnet</span>
+<span class="k">*</span><span class="nt">-ADReplicationUpToDatenessVectorTable</span>
+Sync-ADObject
+</pre></table></code></div></div><p>A nice looking inventory of DC’s</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-ADDomainController <span class="nt">-Filter</span> <span class="k">*</span> | <span class="k">select </span><span class="nb">hostname</span>,IPv4Address,IsGlobalCatalog,IsReadOnly,OperatingSystem | Format-Table <span class="nt">-auto</span>
+</pre></table></code></div></div><h3 id="active-directory-drive"><span class="mr-2">Active Directory Drive</span><a href="#active-directory-drive" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Example of Active Directory drive</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>Imort-Module ActiveDirectory
+<span class="nb">dir </span>ad:
+Set-Location ad:
+Set-Location <span class="s2">"dc=lab,dc=pentest,dc=local"</span>
+<span class="nb">dir</span>
+</pre></table></code></div></div><h3 id="anr"><span class="mr-2">ANR</span><a href="#anr" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>ANR enables you to find a user when you have some information about a user, but don’t know exactly to which attribute that data corresponds. For example, if you know the user has “Thor” somewhere, but don’t know exactly what the SAMAccountName is (or DN, SID, name, etc). Submitting an ANR search will query the AD attributes flagged for ANR (attributes must be indexed) and replies with the results (may be more than one user found).</p><p>Example of ANR</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>Import-Module ActiveDirectory
+Get-ADObject <span class="nt">-LDAPFilter</span> <span class="o">{(</span>&amp;<span class="o">(</span><span class="nv">ObjectClass</span><span class="o">=</span>User<span class="o">)(</span><span class="nv">ANR</span><span class="o">=</span>Thor<span class="o">))}</span>
+</pre></table></code></div></div><h2 id="active-directory-enumeration-with-net"><span class="mr-2">Active Directory Enumeration with .NET</span><a href="#active-directory-enumeration-with-net" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Here are some alternatives to using Get-ADForest &amp; Get-Domain:</p><h3 id="get-active-directory-forest-information"><span class="mr-2">Get Active Directory Forest Information</span><a href="#get-active-directory-forest-information" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="nv">$ADForestInfo</span> <span class="o">=</span> <span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>
+<span class="nv">$ADForestInfo</span>.Name
+<span class="nv">$ADForestInfo</span>.Sites
+<span class="nv">$ADForestInfo</span>.Domains
+<span class="nv">$ADForestInfo</span>.GlobalCatalogs
+<span class="nv">$ADForestInfo</span>.ApplicationPartitions
+<span class="nv">$ADForestInfo</span>.ForestMode
+<span class="nv">$ADForestInfo</span>.RootDomain
+<span class="nv">$ADForestInfo</span>.Schema
+<span class="nv">$ADForestInfo</span>.SchemaRoleOwner
+<span class="nv">$ADForestInfo</span>.NamingRoleOwner
+</pre></table></code></div></div><p>OR</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Name
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Sites
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Domains
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.GlobalCatalogs
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.ApplicationPartitions
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.ForestMode
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.RootDomain
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Schema
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.SchemaRoleOwner
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.NamingRoleOwner
+</pre></table></code></div></div><h3 id="get-active-directory-domain-information"><span class="mr-2">Get Active Directory Domain Information</span><a href="#get-active-directory-domain-information" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Target the current (local) computer’s domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ADDomainInfo</span> <span class="o">=</span> <span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetComputerDomain<span class="o">()</span>
+</pre></table></code></div></div><p>Target the current user’s domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ADDomainName</span> <span class="o">=</span> <span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>
+</pre></table></code></div></div><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ADDomainInfo</span>.Forest
+<span class="nv">$ADDomainInfo</span>.DomainControllers
+<span class="nv">$ADDomainInfo</span>.Children
+<span class="nv">$ADDomainInfo</span>.DomainMode
+<span class="nv">$ADDomainInfo</span>.Parent
+<span class="nv">$ADDomainInfo</span>.PdcRoleOwner
+<span class="nv">$ADDomainInfo</span>.RidRoleOwner
+<span class="nv">$ADDomainInfo</span>.Name
+</pre></table></code></div></div><p>OR</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.Forest
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.DomainControllers
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.Children
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.DomainMode
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.Parent
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.PdcRoleOwner
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.RidRoleOwner
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.Name
+</pre></table></code></div></div><ul><li>Note: Use <code class="language-shell highlighter-rouge"><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCOMPUTERDomain<span class="o">()</span>.Attribute</code> for the local computer’s domain info.</ul><p>Example:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCOMPUTERDomain<span class="o">()</span>.Forest
+</pre></table></code></div></div><h3 id="get-the-local-computers-site-information"><span class="mr-2">Get the local computer’s site information</span><a href="#get-the-local-computers-site-information" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre><span class="nv">$LocalSiteInfo</span> <span class="o">=</span> <span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>
+<span class="nv">$LocalSiteInfo</span>.Name
+<span class="nv">$LocalSiteInfo</span>.Domains
+<span class="nv">$LocalSiteInfo</span>.Subnets
+<span class="nv">$LocalSiteInfo</span>.Servers
+<span class="nv">$LocalSiteInfo</span>.AdjacentSites
+<span class="nv">$LocalSiteInfo</span>.SiteLinks
+<span class="nv">$LocalSiteInfo</span>.InterSiteTopologyGenerator
+<span class="nv">$LocalSiteInfo</span>.Options
+<span class="nv">$LocalSiteInfo</span>.Location
+<span class="nv">$LocalSiteInfo</span>.BridgeheadServers
+<span class="nv">$LocalSiteInfo</span>.PreferredSmtpBridgeheadServers
+<span class="nv">$LocalSiteInfo</span>.PreferredRpcBridgeheadServers
+<span class="nv">$LocalSiteInfo</span>.IntraSiteReplicationSchedule
+</pre></table></code></div></div><p>OR</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Name
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Domains
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Subnets
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Servers
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.AdjacentSites
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.SiteLinks
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.InterSiteTopologyGenerator
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Options
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.Location
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.BridgeheadServers
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.PreferredSmtpBridgeheadServers
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.PreferredRpcBridgeheadServers
+<span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>.IntraSiteReplicationSchedule
+</pre></table></code></div></div><h2 id="sean-metcalf-fave-enumeration-commands"><span class="mr-2">Sean Metcalf Fave Enumeration Commands</span><a href="#sean-metcalf-fave-enumeration-commands" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>Get a Computer’s Site:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite<span class="o">()</span>
+</pre></table></code></div></div><p>Get a User’s Domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.Name
+</pre></table></code></div></div><p>Get a Computer’s Domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetComputerDomain<span class="o">()</span>.Name
+</pre></table></code></div></div><p>List Active Directory FSMOs:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="o">([</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">())</span>.SchemaRoleOwner
+<span class="o">([</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">())</span>.NamingRoleOwner
+<span class="o">([</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">())</span>.InfrastructureRoleOwner
+<span class="o">([</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">())</span>.PdcRoleOwner
+<span class="o">([</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">())</span>.RidRoleOwner
+</pre></table></code></div></div><p>List All Domain Controllers in a Domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.DomainControllers
+</pre></table></code></div></div><p>Get Active Directory Domain Mode:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">()</span>.DomainMode
+</pre></table></code></div></div><p>Get Trusts for current Active Directory Domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">([</span>System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain<span class="o">())</span>.GetAllTrustRelationships<span class="o">()</span>
+</pre></table></code></div></div><p>Get Active Directory Forest Name:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Name
+</pre></table></code></div></div><p>Get a List of Sites in the Active Directory Forest:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>array] <span class="nv">$ADSites</span> <span class="o">=</span> <span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Sites
+</pre></table></code></div></div><p>Get Active Directory Forest Domains:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Domains
+</pre></table></code></div></div><p>Get Active Directory Forest Global Catalogues:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.GlobalCatalogs
+</pre></table></code></div></div><p>Get Active Directory Forest Application Partitions:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.ApplicationPartitions
+</pre></table></code></div></div><p>Get Active Directory Forest Mode:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.ForestMode
+</pre></table></code></div></div><p>Get Active Directory Forest Root Domain:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.RootDomain
+</pre></table></code></div></div><p>Get Active Directory Forest Schema DN:</p><div class="language-shell highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="o">[</span>System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest<span class="o">()</span>.Schema
+</pre></table></code></div></div><h2 id="powershell-mitigations"><span class="mr-2">PowerShell Mitigations</span><a href="#powershell-mitigations" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2><p>PowerShell version 5 will be out very soon and has several compelling security enhancements.</p><h3 id="system-wide-transcripts"><span class="mr-2">System-wide Transcripts</span><a href="#system-wide-transcripts" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Use group policy to have PowerShell log all system PowerShell commands and save the transcripts to a share for parsing.</p><h3 id="script-block-logging"><span class="mr-2">Script Block Logging</span><a href="#script-block-logging" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>PowerShell logs the obfuscated code as well as the dynamically generated code that PowerShell actually executes.</p><h3 id="constrained-powershell"><span class="mr-2">Constrained PowerShell</span><a href="#constrained-powershell" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Automatically enables PowerShell constrained mode when AppLocker policy is set to “Allow”. This limits PowerShell code execution to only core capability. The offensive PowerShell tools typically used by attackers leverage advanced PowerShell functionality disabled in Constrained Mode.</p><h3 id="windows-10---antimalware-integration"><span class="mr-2">Windows 10 - Antimalware Integration</span><a href="#windows-10---antimalware-integration" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Windows 10 adds Antimalware Integration which automatically passes all code PowerShell processes to an installed antimalware solution before execution. If the code is deemed as malicious it doesn’t execute. This also includes code downloaded into memory from the Internet and executed.</p><p>PowerShell Security Recommendations.</p><ul><li>Limit PowerShell Remoting (WinRM) - Limit WinRM listener scope to admin subnet &amp; Disable PowerShell Remoting (WinRM) on DCs.<li>Audit/block PowerShell script execution via AppLocker. Once you have PowerShell v3+, Enable PowerShell Module logging (via GPO). This Enables tracking of PowerShell command usage providing capability to detect invoke-mimikatz use - just search PowerShell logs for “mimikatz”. [Note this won’t catch everything]<li>PowerShell v3+: Enable PowerShell Module logging (via GPO).<li>Leverage Metering for PowerShell usage trend analysis - JoeUser ran PowerShell on 10 computers today?<li>Track PowerShell Remoting Usage through NetFlow data OR check the PowerShell logs on clients (event ID 06) &amp; servers (event id 400)<li>Deploy PowerShell v5 and implement system-wide transcripts</ul></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='//categories/article/'>article</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="//tags/active-directory/" class="post-tag no-text-decoration" >active-directory</a> <a href="//tags/enumeration/" class="post-tag no-text-decoration" >enumeration</a> <a href="//tags/powershell/" class="post-tag no-text-decoration" >powershell</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Querying+Active+Directory+With+PowerShell+-+EvilSaint&url=http%3A%2F%2Ftheevilsaint.github.io%2Fposts%2Fquerying-active-directory-with-powershell%2F" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Querying+Active+Directory+With+PowerShell+-+EvilSaint&u=http%3A%2F%2Ftheevilsaint.github.io%2Fposts%2Fquerying-active-directory-with-powershell%2F" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=http%3A%2F%2Ftheevilsaint.github.io%2Fposts%2Fquerying-active-directory-with-powershell%2F&text=Querying+Active+Directory+With+PowerShell+-+EvilSaint" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Ftheevilsaint.github.io%2Fposts%2Fquerying-active-directory-with-powershell%2F" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/windows-registry/">Windows Registry</a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/ssl/">ssl</a> <a class="post-tag" href="/tags/tls/">tls</a> <a class="post-tag" href="/tags/powershell/">powershell</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/enumeration/">enumeration</a> <a class="post-tag" href="/tags/aws/">aws</a> <a class="post-tag" href="/tags/cloud/">cloud</a> <a class="post-tag" href="/tags/docker/">docker</a> <a class="post-tag" href="/tags/git/">git</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 pl-3 pr-3 pr-xl-4 mt-5"><div id="related-posts" class="mb-2 mb-sm-4"><h3 class="pt-2 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/making-a-youtube-scraper/"><div class="card-body"> <em class="small" data-ts="1629846000" data-df="ll" > Aug 25, 2021 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Making A YouTube Scraper</h3><div class="text-muted small"><p> Making A YouTube Scraper PowerShell What do we need: Get an API Credential for Youtube Query the data from Google API ** Get API Credential for YouTube ** Step 1 First navigate to the fo...</p></div></div></a></div><div class="card"> <a href="/posts/banner-grabbing-introduction/"><div class="card-body"> <em class="small" data-ts="1641859200" data-df="ll" > Jan 11, 2022 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Banner Grabbing Introduction</h3><div class="text-muted small"><p> Netcat By sending the following HTTP request via: nc 192.168.0.10 80 GET / HTTP/1.1 Host: vulnerable &amp;lt;enter&amp;gt; &amp;lt;enter&amp;gt; Saving Banners to a file and parsing in input to ncat rath...</p></div></div></a></div><div class="card"> <a href="/posts/powershell-memory-injection-using-certutilexe/"><div class="card-body"> <em class="small" data-ts="1652828400" data-df="ll" > May 18, 2022 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>PowerShell: In-Memory Injection Using CertUtil.exe</h3><div class="text-muted small"><p> PowerShell is still one of the easiest and best ways to gain a foothold, but at the same time, it is selling you out because it talks to AMSI as soon as it’s run. The beauty of this method is ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="//posts/dsquery/" class="btn btn-outline-primary" prompt="Older"><p>DSQuery</p></a> <a href="//posts/find-interesting-files/" class="btn btn-outline-primary" prompt="Newer"><p>Find Interesting Files</p></a></div><script type="text/javascript"> $(function () { const origin = "https://giscus.app"; const iframe = "iframe.giscus-frame"; const lightTheme = "light"; const darkTheme = "dark_dimmed"; let initTheme = lightTheme; if ($("html[data-mode=dark]").length > 0 || ($("html[data-mode]").length == 0 && window.matchMedia("(prefers-color-scheme: dark)").matches)) { initTheme = darkTheme; } let giscusAttributes = { "src": "https://giscus.app/client.js", "data-repo": "TheEvilSaint/theevilsaint.github.io", "data-repo-id": "MDEwOlJlcG9zaXRvcnkyNTQ3ODQ3Nzk", "data-category": "Comments", "data-category-id": "DIC_kwDODy-1C84CSN7z", "data-mapping": "pathname", "data-reactions-enabled": "1", "data-emit-metadata": "0", "data-theme": initTheme, "data-input-position": "bottom", "data-lang": "en", "crossorigin": "anonymous", "async": "" }; let giscusScript = document.createElement("script"); Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value)); document.getElementById("tail-wrapper").appendChild(giscusScript); addEventListener("message", (event) => { if (event.source === window && event.data && event.data.direction === ModeToggle.ID) { /* global theme mode changed */ const mode = event.data.message; const theme = (mode === ModeToggle.DARK_MODE ? darkTheme : lightTheme); const message = { setConfig: { theme: theme } }; const giscus = document.querySelector(iframe).contentWindow; giscus.postMessage({ giscus: message }, origin); } }); }); </script></div></div></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/ssl/">ssl</a> <a class="post-tag" href="/tags/tls/">tls</a> <a class="post-tag" href="/tags/powershell/">powershell</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/windows/">windows</a> <a class="post-tag" href="/tags/enumeration/">enumeration</a> <a class="post-tag" href="/tags/aws/">aws</a> <a class="post-tag" href="/tags/cloud/">cloud</a> <a class="post-tag" href="/tags/docker/">docker</a> <a class="post-tag" href="/tags/git/">git</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><footer><div class="container pl-lg-4 pr-lg-4"><div class="d-flex justify-content-between align-items-center text-muted ml-md-3 mr-md-3"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://www.twitter.com/_evilsaint_/">evilsaint</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"></p></div></div></div></footer><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a><div id="notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-animation="true" data-autohide="false"><div class="toast-header"> <button type="button" class="ml-2 ml-auto close" data-dismiss="toast" aria-label="Close"> <span aria-hidden="true">&times;</span> </button></div><div class="toast-body text-center pt-0"><p class="pl-2 pr-2 mb-3">A new version of content is available!</p><button type="button" class="btn btn-primary" aria-label="Update"> Update 🚀 </button></div></div><script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/en.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-KK5XXRT4LD"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-KK5XXRT4LD'); }); </script>
